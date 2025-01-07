@@ -286,6 +286,22 @@ function upgradePanel() {
     anchor("center"),
     color(rgb(0, 0, 0)), // Black text
   ]);
+
+  const upgradeMaxEnergyButton = add([
+    rect(150, 40, { radius: 5 }),
+    pos(panelPos.x + 20, panelPos.y + 170),
+    area(),
+    color(rgb(255, 255, 86)), // Yellow
+    "upgradeTimerButton",
+  ]);
+  upgradePanelElements.push(upgradeMaxEnergyButton);
+
+  add([
+    text("Plus Max Energy (+10 max)", { size: 14 }),
+    pos(upgradeMaxEnergyButton.pos.x + 75, upgradeMaxEnergyButton.pos.y + 10),
+    anchor("center"),
+    color(rgb(0, 0, 0)), // Black text
+  ]);
 }
 
 // Toggle Upgrade Panel
