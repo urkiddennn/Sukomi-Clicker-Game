@@ -7,7 +7,7 @@ let CLICKABLE = true;
 
 let targetScale = 3;
 let targetAngle = 0;
-let TIMER = 2000;
+let TIMER = 1200000; // 20 minutes
 
 let ENERGY = 20;
 let MAXENERGY = ENERGY; // Initial ENERGY value
