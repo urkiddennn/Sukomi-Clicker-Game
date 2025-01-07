@@ -4,7 +4,16 @@ import kaplay from "kaplay";
 let SCORE = 0;
 let CLICKPOINTS = 1;
 
-// UI Variables
+let targetScale = 3;
+let targetAngle = 0;
+
+let ENERGY = 20;
+let progressBarValue = 1; // Progress value (0 to 1)
+const progressBarWidth = 400;
+let progressBarFillWidth = 400;
+const progressBarHeight = 20;
+const progressBarPos = [200, 50]; // UI Variables
+
 const COINPOS = [40, 50];
 
 // Initialize Kaplay
@@ -25,6 +34,21 @@ let sukomi = add([
   "sukomi",
 ]);
 
+add([
+  rect(progressBarWidth, progressBarHeight),
+  pos(progressBarPos[0], progressBarPos[1]),
+  color(rgb(50, 50, 50)), // Gray background
+  anchor("topleft"),
+]);
+
+let progressBarFill = add([
+  rect(progressBarFillWidth, progressBarHeight),
+  // Initial width is 0
+  pos(progressBarPos[0], progressBarPos[1]),
+  color(rgb(86, 255, 86)), // Green fill
+  anchor("topleft"),
+]);
+
 // Coin setup
 const coin = add([
   sprite("coin"),
@@ -42,10 +66,6 @@ let scoreText = add([
   anchor("center"),
   scale(1.5),
 ]);
-
-// Target properties for animation
-let targetScale = 3;
-let targetAngle = 0;
 
 // Hover effect
 onHoverUpdate("sukomi", () => {
@@ -70,6 +90,13 @@ onUpdate(() => {
   if (sukomi.angle) {
     sukomi.angle = lerp(sukomi.angle, targetAngle, 0.1);
   }
+
+  // if (progressBarValue < 1) {
+  //   progressBarValue += 0.01; // Increment progress
+  // }
+
+  // Update the width of the progress bar fill
+  progressBarFill.width = progressBarValue * progressBarWidth;
 });
 
 let addNumberPoints = (startPos) => {
@@ -109,6 +136,7 @@ onClick("sukomi", () => {
   addNumberPoints(sukomi.pos);
   sukomi.scaleTo(lerp(sukomi.scale.x + 1, targetScale, 0.1));
   SCORE++;
+  progressBarValue -= 0.01;
 });
 
 if (debug.active) {
