@@ -7,7 +7,8 @@ let CLICKPOINTS = 1;
 let targetScale = 3;
 let targetAngle = 0;
 
-let ENERGY = 20; // Initial ENERGY value
+let ENERGY = 20;
+let CURRENTENERGY = ENERGY; // Initial ENERGY value
 let progressBarValue = 1; // Progress value (0 to 1)
 const progressBarWidth = 400;
 let progressBarFillWidth = 400;
@@ -52,7 +53,7 @@ let progressBarFill = add([
 
 // ENERGY text
 let energyText = add([
-  text(`ENERGY: ${ENERGY}`),
+  text(`${ENERGY}/${CURRENTENERGY}`),
   pos(progressBarPos[0], progressBarPos[1] - 15),
   anchor("left"),
   scale(1),
