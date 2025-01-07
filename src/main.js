@@ -7,10 +7,10 @@ let CLICKABLE = true;
 
 let targetScale = 3;
 let targetAngle = 0;
-let TIMER = 100000;
+let TIMER = 2000;
 
 let ENERGY = 20;
-let CURRENTENERGY = ENERGY; // Initial ENERGY value
+let MAXENERGY = ENERGY; // Initial ENERGY value
 let progressBarValue = 1; // Progress value (0 to 1)
 const progressBarWidth = 400;
 let progressBarFillWidth = 400;
@@ -58,7 +58,7 @@ let progressBarFill = add([
 
 // ENERGY text
 let energyText = add([
-  text(`${ENERGY}/${CURRENTENERGY}`),
+  text(`${ENERGY}/${MAXENERGY}`),
   pos(progressBarPos[0], progressBarPos[1] - 15),
   anchor("left"),
   scale(1),
@@ -116,8 +116,8 @@ onUpdate(() => {
   progressBarFill.width = progressBarValue * progressBarWidth;
 
   // Update ENERGY text
-  if (energyText.text !== `${ENERGY}/${CURRENTENERGY}`) {
-    energyText.text = `${ENERGY}/${CURRENTENERGY}`;
+  if (energyText.text !== `${ENERGY}/${MAXENERGY}`) {
+    energyText.text = `${ENERGY}/${MAXENERGY}`;
   }
 });
 
@@ -155,8 +155,9 @@ let addNumberPoints = (startPos) => {
   });
 };
 
+// Click event for Sukomi
 onClick("sukomi", () => {
-  if (CLICKABLE) {
+  if (CLICKABLE && ENERGY > 0) {
     addNumberPoints(sukomi.pos);
     sukomi.scaleTo(lerp(sukomi.scale.x + 1, 2, 0.1));
 
@@ -164,27 +165,23 @@ onClick("sukomi", () => {
     SCORE++;
 
     // Decrease ENERGY only if it's above 0
-    if (ENERGY > 0) {
-      ENERGY--; // Decrease ENERGY
-      progressBarValue = ENERGY / 20; // Update progressBarValue based on ENERGY
+    ENERGY--;
+    progressBarValue = ENERGY / 20;
 
-      // If ENERGY reaches 0, set CLICKABLE to false
-      if (ENERGY === 0) {
-        CLICKABLE = false;
-      }
-    }
+    // Update CLICKABLE based on ENERGY
+    CLICKABLE = ENERGY > 0;
   }
 });
 
-// Function to add energy every 2 seconds
+// Function to replenish energy every 2 seconds
 setInterval(() => {
-  if (ENERGY < CURRENTENERGY) {
+  if (ENERGY < MAXENERGY) {
     ENERGY++; // Increase energy
     progressBarValue = ENERGY / 20; // Update progress bar
-  }
 
-  // If energy reaches the maximum, stop increasing it
-  if (ENERGY === CURRENTENERGY) {
-    CLICKABLE = true; // Enable clicking again when energy is full
+    // Allow clicking again if energy is replenished
+    if (ENERGY > 0) {
+      CLICKABLE = true;
+    }
   }
-}, TIMER); // Runs every 2 seconds
+}, TIMER);
