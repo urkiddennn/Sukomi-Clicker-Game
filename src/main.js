@@ -109,8 +109,8 @@ onUpdate(() => {
   progressBarFill.width = progressBarValue * progressBarWidth;
 
   // Update ENERGY text
-  if (energyText.text !== `ENERGY: ${ENERGY}`) {
-    energyText.text = `ENERGY: ${ENERGY}`;
+  if (energyText.text !== `${ENERGY}/${CURRENTENERGY}`) {
+    energyText.text = `${ENERGY}/${CURRENTENERGY}`;
   }
 });
 
