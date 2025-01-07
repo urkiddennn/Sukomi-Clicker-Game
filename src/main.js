@@ -1,27 +1,29 @@
 import kaplay from "kaplay";
-
 // Global variables
 let SCORE = 0;
-let CLICKPOINTS = 1;
+let CLICKPOINTS = 1; // Points added per click
 let CLICKABLE = true;
 let SHOWSETTINGS = false;
+let SHOWUPGRADE = false;
 
 let targetScale = 3;
 let targetAngle = 0;
-let TIMER = 150000; // 2 minutes for energy refill
-
+let TIMER = 15000; // Energy refill timer in milliseconds
 let ENERGY = 80;
 let MAXENERGY = ENERGY;
 let progressBarValue = 1; // Progress value (0 to 1)
 const progressBarWidth = 400;
 const progressBarHeight = 20;
 const progressBarPos = [250, 50];
-const configPos = [1850, 50]; // UI Variables
+const configPos = [1850, 50];
 
 const COINPOS = [40, 50];
 
 // Track hover state
 let isHovered = false;
+
+// Store upgrade panel elements
+let upgradePanelElements = [];
 
 // Initialize Kaplay
 kaplay();
@@ -32,6 +34,7 @@ loadSprite("sukomi", "../src/sprites/sukomi.png");
 loadSprite("coin", "../src/sprites/coin.png");
 loadSprite("lightning", "../src/sprites/lightening.png");
 loadSprite("config", "../src/sprites/config.png");
+loadSprite("upgrade", "../src/sprites/api_book.png");
 
 // Sukomi setup
 let sukomi = add([
@@ -41,6 +44,15 @@ let sukomi = add([
   anchor("center"),
   scale(3), // Initial scale
   "sukomi",
+]);
+
+let upgrade = add([
+  sprite("upgrade"),
+  pos(80, height() / 1.1),
+  area(),
+  anchor("center"),
+  scale(1.5),
+  "upgrade",
 ]);
 
 let config = add([
@@ -185,7 +197,7 @@ onClick("sukomi", () => {
     sukomi.scaleTo(lerp(sukomi.scale.x + 1, 2, 0.1));
 
     // Increment the score
-    SCORE++;
+    SCORE += CLICKPOINTS;
 
     // Decrease ENERGY only if it's above 0
     ENERGY--;
@@ -196,7 +208,7 @@ onClick("sukomi", () => {
   }
 });
 
-// Function to replenish energy every 2 seconds
+// Function to replenish energy at intervals
 setInterval(() => {
   if (ENERGY < MAXENERGY) {
     ENERGY++; // Increase energy
@@ -209,69 +221,89 @@ setInterval(() => {
   }
 }, TIMER);
 
-function settingsPanel() {
-  // Panel dimensions and position
-  const panelWidth = 150;
+// Upgrade Panel Functionality
+function upgradePanel() {
+  const panelWidth = 350;
   const panelHeight = 200;
-  const panelPos = vec2(configPos[0] - 30, configPos[1] + 30);
+  const panelPos = vec2(upgrade.pos.x + 30, upgrade.pos.y - 350);
 
   // Panel background
-  let panel = add([
-    rect(panelWidth, panelHeight, { radius: 10 }), // Adjust panel size
+  const panelBackground = add([
+    rect(panelWidth, panelHeight, { radius: 10 }),
     pos(panelPos),
     area(),
-    anchor("topright"),
+    anchor("topleft"),
     scale(1.5),
-    color(rgb(26, 25, 28)), // Panel background color
-    "panel",
+    color(rgb(26, 25, 28)),
   ]);
+  upgradePanelElements.push(panelBackground);
 
-  // Center point of the panel
-  const panelCenter = vec2(
-    panelPos.x - panelWidth / 2, // Subtract half width for centering
-    panelPos.y + panelHeight / 2 // Add half height for centering
-  );
-
-  // Title text
-  add([
-    text("Settings", { size: 16 }),
-    pos(panelCenter.x, panelPos.y + 20), // Center horizontally, offset vertically
+  // Panel Title
+  const panelTitle = add([
+    text("Upgrade Options", { size: 16 }),
+    pos(panelPos.x + panelWidth / 2, panelPos.y + 20),
     anchor("center"),
-    color(rgb(255, 255, 255)), // White text color
-    "panelText",
+    color(rgb(255, 255, 255)),
   ]);
+  upgradePanelElements.push(panelTitle);
 
-  // Example setting option text
-  add([
-    text("Option 1", { size: 14 }),
-    pos(panelCenter.x, panelCenter.y - 20), // Center horizontally, offset slightly above center
-    anchor("center"),
-    color(rgb(200, 200, 200)), // Light gray text color
-    "panelOption",
-  ]);
-
-  // Example button
-  let button = add([
-    rect(100, 30, { radius: 5 }),
-    pos(panelCenter.x - 50, panelCenter.y + 20), // Center horizontally by subtracting half the button width
+  // Upgrade Click Points Button
+  const upgradeClickButton = add([
+    rect(150, 40, { radius: 5 }),
+    pos(panelPos.x + 100, panelPos.y + 50),
     area(),
-    color(rgb(50, 50, 255)), // Button color
-    "panelButton",
+    color(rgb(86, 255, 86)), // Green
+    "upgradeClickButton",
+  ]);
+  upgradePanelElements.push(upgradeClickButton);
+
+  add([
+    text("Upgrade Click (+1)", { size: 14 }),
+    pos(upgradeClickButton.pos.x + 75, upgradeClickButton.pos.y + 10),
+    anchor("center"),
+    color(rgb(0, 0, 0)), // Black text
   ]);
 
-  // Button text
+  // Upgrade Energy Timer Button
+  const upgradeTimerButton = add([
+    rect(150, 40, { radius: 5 }),
+    pos(panelPos.x + 100, panelPos.y + 110),
+    area(),
+    color(rgb(255, 255, 86)), // Yellow
+    "upgradeTimerButton",
+  ]);
+  upgradePanelElements.push(upgradeTimerButton);
+
   add([
-    text("Click Me", { size: 12 }),
-    pos(button.pos.x + button.width / 2, button.pos.y + button.height / 2), // Center inside the button
+    text("Faster Energy (+10%)", { size: 14 }),
+    pos(upgradeTimerButton.pos.x + 75, upgradeTimerButton.pos.y + 10),
     anchor("center"),
-    color(rgb(255, 255, 255)), // White text color
-    "buttonText",
+    color(rgb(0, 0, 0)), // Black text
   ]);
 }
 
-onClick("config", () => {
-  if (SHOWSETTINGS) {
-    settingsPanel();
+// Toggle Upgrade Panel
+onClick("upgrade", () => {
+  if (SHOWUPGRADE) {
+    // Destroy all elements in the upgrade panel
+    upgradePanelElements.forEach((element) => destroy(element));
+    upgradePanelElements = []; // Clear the array
+  } else {
+    // Create the upgrade panel
+    upgradePanel();
   }
-  SHOWSETTINGS = !SHOWSETTINGS;
+  SHOWUPGRADE = !SHOWUPGRADE;
+});
+
+// Upgrade Click Points
+onClick("upgradeClickButton", () => {
+  if (SCORE >= 20) {
+    SCORE -= 20;
+    CLICKPOINTS++; // Add 1 to click points
+  }
+});
+
+// Upgrade Energy Timer
+onClick("upgradeTimerButton", () => {
+  TIMER = Math.max(1000, TIMER * 0.9); // Reduce timer by 10% but not below 1 second
 });
