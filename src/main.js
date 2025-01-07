@@ -7,6 +7,7 @@ let CLICKABLE = true;
 
 let targetScale = 3;
 let targetAngle = 0;
+let TIMER = 100000;
 
 let ENERGY = 20;
 let CURRENTENERGY = ENERGY; // Initial ENERGY value
@@ -153,6 +154,7 @@ let addNumberPoints = (startPos) => {
     }
   });
 };
+
 onClick("sukomi", () => {
   if (CLICKABLE) {
     addNumberPoints(sukomi.pos);
@@ -173,3 +175,16 @@ onClick("sukomi", () => {
     }
   }
 });
+
+// Function to add energy every 2 seconds
+setInterval(() => {
+  if (ENERGY < CURRENTENERGY) {
+    ENERGY++; // Increase energy
+    progressBarValue = ENERGY / 20; // Update progress bar
+  }
+
+  // If energy reaches the maximum, stop increasing it
+  if (ENERGY === CURRENTENERGY) {
+    CLICKABLE = true; // Enable clicking again when energy is full
+  }
+}, TIMER); // Runs every 2 seconds
