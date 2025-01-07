@@ -7,7 +7,7 @@ let CLICKPOINTS = 1;
 let targetScale = 3;
 let targetAngle = 0;
 
-let ENERGY = 20;
+let ENERGY = 20; // Initial ENERGY value
 let progressBarValue = 1; // Progress value (0 to 1)
 const progressBarWidth = 400;
 let progressBarFillWidth = 400;
@@ -34,6 +34,7 @@ let sukomi = add([
   "sukomi",
 ]);
 
+// Progress bar background
 add([
   rect(progressBarWidth, progressBarHeight),
   pos(progressBarPos[0], progressBarPos[1]),
@@ -41,12 +42,21 @@ add([
   anchor("topleft"),
 ]);
 
+// Progress bar fill
 let progressBarFill = add([
   rect(progressBarFillWidth, progressBarHeight),
-  // Initial width is 0
   pos(progressBarPos[0], progressBarPos[1]),
   color(rgb(86, 255, 86)), // Green fill
   anchor("topleft"),
+]);
+
+// ENERGY text
+let energyText = add([
+  text(`ENERGY: ${ENERGY}`),
+  pos(progressBarPos[0], progressBarPos[1] - 15),
+  anchor("left"),
+  scale(1),
+  "energyText", // Tag for identification
 ]);
 
 // Coin setup
@@ -59,7 +69,7 @@ const coin = add([
   "coin",
 ]);
 
-// Display Score (optimized)
+// Display Score
 let scoreText = add([
   text(SCORE),
   pos(COINPOS[0] + 80, COINPOS[1] + 5),
@@ -79,11 +89,14 @@ onHoverEnd("sukomi", () => {
   targetAngle = 340;
 });
 
+// Update loop
 onUpdate(() => {
+  // Update score display
   if (scoreText.text !== SCORE) {
     scoreText.text = SCORE;
   }
 
+  // Smooth scaling and rotation for Sukomi
   if (sukomi.scale) {
     sukomi.scaleTo(lerp(sukomi.scale.x, targetScale, 0.1));
   }
@@ -91,14 +104,16 @@ onUpdate(() => {
     sukomi.angle = lerp(sukomi.angle, targetAngle, 0.1);
   }
 
-  // if (progressBarValue < 1) {
-  //   progressBarValue += 0.01; // Increment progress
-  // }
-
-  // Update the width of the progress bar fill
+  // Update progress bar width
   progressBarFill.width = progressBarValue * progressBarWidth;
+
+  // Update ENERGY text
+  if (energyText.text !== `ENERGY: ${ENERGY}`) {
+    energyText.text = `ENERGY: ${ENERGY}`;
+  }
 });
 
+// Number effect on click
 let addNumberPoints = (startPos) => {
   const offsetRange = 100;
   let endPos = vec2(
@@ -132,13 +147,28 @@ let addNumberPoints = (startPos) => {
   });
 };
 
+// Click event for Sukomi
 onClick("sukomi", () => {
+  // Add points visually
   addNumberPoints(sukomi.pos);
-  sukomi.scaleTo(lerp(sukomi.scale.x + 1, targetScale, 0.1));
+
+  // Increment the score
   SCORE++;
-  progressBarValue -= 0.01;
+
+  // Only decrease ENERGY if it is greater than 0
+  if (ENERGY > 0) {
+    ENERGY--; // Decrease ENERGY
+    progressBarValue = ENERGY / 20; // Update progressBarValue based on ENERGY
+  }
+
+  // Optional: Prevent ENERGY from going negative
+  if (ENERGY < 0) {
+    ENERGY = 0;
+    progressBarValue = 0; // Progress bar is fully depleted
+  }
 });
 
+// Debug tools (optional)
 if (debug.active) {
   let debugFrameCounter = 0;
   const frameThrottle = 2;
