@@ -288,17 +288,23 @@ function upgradePanel() {
   ]);
 
   const upgradeMaxEnergyButton = add([
-    rect(150, 40, { radius: 5 }),
+    rect(180, 40, { radius: 5 }),
     pos(panelPos.x + 20, panelPos.y + 170),
     area(),
-    color(rgb(255, 255, 86)), // Yellow
+    color(rgb(86, 154, 255)), // Yellow
     "upgradeTimerButton",
   ]);
   upgradePanelElements.push(upgradeMaxEnergyButton);
 
   add([
-    text("Plus Max Energy (+10 max)", { size: 14 }),
+    text("Plus Max Energy", { size: 14 }),
     pos(upgradeMaxEnergyButton.pos.x + 75, upgradeMaxEnergyButton.pos.y + 10),
+    anchor("center"),
+    color(rgb(0, 0, 0)), // Black text
+  ]);
+  add([
+    text("+10 max energy", { size: 14 }),
+    pos(upgradeMaxEnergyButton.pos.x + 75, upgradeMaxEnergyButton.pos.y + 30),
     anchor("center"),
     color(rgb(0, 0, 0)), // Black text
   ]);
@@ -329,6 +335,13 @@ onClick("upgradeClickButton", () => {
 onClick("upgradeTimerButton", () => {
   if (SCORE >= 100) {
     TIMER = Math.max(1000, TIMER * 0.9); // Reduce timer by 10% but not below 1 second
+    SCORE -= 100;
+  }
+});
+
+onClick("upgradeMaxEnergyButton", () => {
+  if (SCORE >= 100) {
+    MAXENERGY += 10;
     SCORE -= 100;
   }
 });
