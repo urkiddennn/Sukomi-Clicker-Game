@@ -84,8 +84,8 @@ let addNumberPoints = (startPos) => {
     pos(startPos),
     text(`+${CLICKPOINTS}`),
     anchor("center"),
-    scale(1),
-    color(rgb(255, 255, 0)),
+    scale(0.5),
+    color(rgb(255, 255, 255)),
     opacity(1),
     "numberEffect", // Tag for identification
   ]);
@@ -97,7 +97,7 @@ let addNumberPoints = (startPos) => {
         lerp(startPos.x, endPos.x, progress),
         lerp(startPos.y, endPos.y, progress)
       );
-      number.scaleTo(lerp(1, 3, progress));
+      number.scaleTo(lerp(1, 2, progress));
       number.opacity = lerp(1, 0, progress);
     } else {
       destroy(number);
