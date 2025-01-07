@@ -15,7 +15,7 @@ let progressBarValue = 1; // Progress value (0 to 1)
 const progressBarWidth = 400;
 let progressBarFillWidth = 400;
 const progressBarHeight = 20;
-const progressBarPos = [200, 50]; // UI Variables
+const progressBarPos = [250, 50]; // UI Variables
 
 const COINPOS = [40, 50];
 
@@ -29,6 +29,7 @@ setBackground("#000000");
 // Load all assets
 loadSprite("sukomi", "../src/sprites/sukomi.png");
 loadSprite("coin", "../src/sprites/coin.png");
+loadSprite("lightning", "../src/sprites/lightening.png");
 
 // Sukomi setup
 let sukomi = add([
@@ -40,6 +41,13 @@ let sukomi = add([
   "sukomi",
 ]);
 
+add([
+  sprite("lightning"),
+  pos(progressBarPos[0] - 50, progressBarPos[1]),
+  area(),
+  anchor("left"),
+  scale(1.5),
+]);
 // Progress bar background
 add([
   rect(progressBarWidth, progressBarHeight, { radius: 10 }),
