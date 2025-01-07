@@ -15,7 +15,8 @@ let progressBarValue = 1; // Progress value (0 to 1)
 const progressBarWidth = 400;
 let progressBarFillWidth = 400;
 const progressBarHeight = 20;
-const progressBarPos = [250, 50]; // UI Variables
+const progressBarPos = [250, 50];
+const configPos = [1850, 50]; // UI Variables
 
 const COINPOS = [40, 50];
 
@@ -30,6 +31,7 @@ setBackground("#000000");
 loadSprite("sukomi", "../src/sprites/sukomi.png");
 loadSprite("coin", "../src/sprites/coin.png");
 loadSprite("lightning", "../src/sprites/lightening.png");
+loadSprite("config", "../src/sprites/config.png");
 
 // Sukomi setup
 let sukomi = add([
@@ -39,6 +41,15 @@ let sukomi = add([
   anchor("center"),
   scale(3), // Initial scale
   "sukomi",
+]);
+
+let config = add([
+  sprite("config"),
+  pos(configPos[0], configPos[1]),
+  area(),
+  anchor("center"),
+  scale(1.5),
+  "config",
 ]);
 
 add([
@@ -193,3 +204,67 @@ setInterval(() => {
     }
   }
 }, TIMER);
+
+function settingsPanel() {
+  // Panel dimensions and position
+  const panelWidth = 150;
+  const panelHeight = 200;
+  const panelPos = vec2(configPos[0] - 30, configPos[1] + 30);
+
+  // Panel background
+  let panel = add([
+    rect(panelWidth, panelHeight, { radius: 10 }), // Adjust panel size
+    pos(panelPos),
+    area(),
+    anchor("topright"),
+    scale(1.5),
+    color(rgb(26, 25, 28)), // Panel background color
+    "panel",
+  ]);
+
+  // Center point of the panel
+  const panelCenter = vec2(
+    panelPos.x - panelWidth / 2, // Subtract half width for centering
+    panelPos.y + panelHeight / 2 // Add half height for centering
+  );
+
+  // Title text
+  add([
+    text("Settings", { size: 16 }),
+    pos(panelCenter.x, panelPos.y + 20), // Center horizontally, offset vertically
+    anchor("center"),
+    color(rgb(255, 255, 255)), // White text color
+    "panelText",
+  ]);
+
+  // Example setting option text
+  add([
+    text("Option 1", { size: 14 }),
+    pos(panelCenter.x, panelCenter.y - 20), // Center horizontally, offset slightly above center
+    anchor("center"),
+    color(rgb(200, 200, 200)), // Light gray text color
+    "panelOption",
+  ]);
+
+  // Example button
+  let button = add([
+    rect(100, 30, { radius: 5 }),
+    pos(panelCenter.x - 50, panelCenter.y + 20), // Center horizontally by subtracting half the button width
+    area(),
+    color(rgb(50, 50, 255)), // Button color
+    "panelButton",
+  ]);
+
+  // Button text
+  add([
+    text("Click Me", { size: 12 }),
+    pos(button.pos.x + button.width / 2, button.pos.y + button.height / 2), // Center inside the button
+    anchor("center"),
+    color(rgb(255, 255, 255)), // White text color
+    "buttonText",
+  ]);
+}
+
+onClick("config", () => {
+  settingsPanel();
+});
