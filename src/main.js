@@ -311,5 +311,8 @@ onClick("upgradeClickButton", () => {
 
 // Upgrade Energy Timer
 onClick("upgradeTimerButton", () => {
-  TIMER = Math.max(1000, TIMER * 0.9); // Reduce timer by 10% but not below 1 second
+  if (SCORE >= 100) {
+    TIMER = Math.max(1000, TIMER * 0.9); // Reduce timer by 10% but not below 1 second
+    SCORE -= 100;
+  }
 });
