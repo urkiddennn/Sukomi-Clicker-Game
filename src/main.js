@@ -8,13 +8,12 @@ let SHOWSETTINGS = false;
 
 let targetScale = 3;
 let targetAngle = 0;
-let TIMER = 1200000; // 20 minutes
+let TIMER = 150000; // 2 minutes for energy refill
 
-let ENERGY = 20;
-let MAXENERGY = ENERGY; // Initial ENERGY value
+let ENERGY = 80;
+let MAXENERGY = ENERGY;
 let progressBarValue = 1; // Progress value (0 to 1)
 const progressBarWidth = 400;
-let progressBarFillWidth = 400;
 const progressBarHeight = 20;
 const progressBarPos = [250, 50];
 const configPos = [1850, 50]; // UI Variables
@@ -60,6 +59,7 @@ add([
   anchor("left"),
   scale(1.5),
 ]);
+
 // Progress bar background
 add([
   rect(progressBarWidth, progressBarHeight, { radius: 10 }),
@@ -70,7 +70,7 @@ add([
 
 // Progress bar fill
 let progressBarFill = add([
-  rect(progressBarFillWidth, progressBarHeight, { radius: 10 }),
+  rect(progressBarWidth, progressBarHeight, { radius: 10 }),
   pos(progressBarPos[0], progressBarPos[1]),
   color(rgb(86, 255, 86)), // Green fill
   anchor("topleft"),
@@ -132,6 +132,9 @@ onUpdate(() => {
     sukomi.angle = lerp(sukomi.angle, targetAngle, 0.1);
   }
 
+  // Clamp progressBarValue between 0 and 1
+  progressBarValue = Math.min(Math.max(progressBarValue, 0), 1);
+
   // Update progress bar width
   progressBarFill.width = progressBarValue * progressBarWidth;
 
@@ -186,7 +189,7 @@ onClick("sukomi", () => {
 
     // Decrease ENERGY only if it's above 0
     ENERGY--;
-    progressBarValue = ENERGY / 20;
+    progressBarValue = ENERGY / MAXENERGY;
 
     // Update CLICKABLE based on ENERGY
     CLICKABLE = ENERGY > 0;
@@ -197,7 +200,7 @@ onClick("sukomi", () => {
 setInterval(() => {
   if (ENERGY < MAXENERGY) {
     ENERGY++; // Increase energy
-    progressBarValue = ENERGY / 20; // Update progress bar
+    progressBarValue = ENERGY / MAXENERGY; // Update progress bar
 
     // Allow clicking again if energy is replenished
     if (ENERGY > 0) {
@@ -250,7 +253,7 @@ function settingsPanel() {
   // Example button
   let button = add([
     rect(100, 30, { radius: 5 }),
-    pos(panelCenter.x - 100, panelCenter.y + 20), // Center horizontally by subtracting half the button width
+    pos(panelCenter.x - 50, panelCenter.y + 20), // Center horizontally by subtracting half the button width
     area(),
     color(rgb(50, 50, 255)), // Button color
     "panelButton",
@@ -267,5 +270,8 @@ function settingsPanel() {
 }
 
 onClick("config", () => {
-  settingsPanel();
+  if (SHOWSETTINGS) {
+    settingsPanel();
+  }
+  SHOWSETTINGS = !SHOWSETTINGS;
 });
