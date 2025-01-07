@@ -3,6 +3,7 @@ import kaplay from "kaplay";
 // Global variables
 let SCORE = 0;
 let CLICKPOINTS = 1;
+let CLICKABLE = true;
 
 let targetScale = 3;
 let targetAngle = 0;
@@ -16,6 +17,9 @@ const progressBarHeight = 20;
 const progressBarPos = [200, 50]; // UI Variables
 
 const COINPOS = [40, 50];
+
+// Track hover state
+let isHovered = false;
 
 // Initialize Kaplay
 kaplay();
@@ -37,7 +41,7 @@ let sukomi = add([
 
 // Progress bar background
 add([
-  rect(progressBarWidth, progressBarHeight),
+  rect(progressBarWidth, progressBarHeight, { radius: 10 }),
   pos(progressBarPos[0], progressBarPos[1]),
   color(rgb(50, 50, 50)), // Gray background
   anchor("topleft"),
@@ -45,7 +49,7 @@ add([
 
 // Progress bar fill
 let progressBarFill = add([
-  rect(progressBarFillWidth, progressBarHeight),
+  rect(progressBarFillWidth, progressBarHeight, { radius: 10 }),
   pos(progressBarPos[0], progressBarPos[1]),
   color(rgb(86, 255, 86)), // Green fill
   anchor("topleft"),
@@ -83,11 +87,13 @@ onHoverUpdate("sukomi", () => {
   setCursor("pointer");
   targetScale = 4;
   targetAngle = 340;
+  isHovered = true; // Set hover state to true
 });
 
 onHoverEnd("sukomi", () => {
   targetScale = 3;
   targetAngle = 340;
+  isHovered = false; // Set hover state to false
 });
 
 // Update loop
@@ -150,34 +156,25 @@ let addNumberPoints = (startPos) => {
 
 // Click event for Sukomi
 onClick("sukomi", () => {
+  if (CLICKABLE === true) {
+    addNumberPoints(sukomi.pos);
+    sukomi.scaleTo(lerp(sukomi.scale.x + 1, 2, 0.1));
+
+    // Increment the score
+    SCORE++;
+
+    // Only decrease ENERGY if it is greater than 0
+    if (ENERGY > 0) {
+      ENERGY--; // Decrease ENERGY
+      progressBarValue = ENERGY / 20; // Update progressBarValue based on ENERGY
+    }
+
+    // Optional: Prevent ENERGY from going negative
+    if (ENERGY < 0) {
+      ENERGY = 0;
+      progressBarValue = 0;
+      CLICKABLE = false; // Progress bar is fully depleted
+    }
+  }
   // Add points visually
-  addNumberPoints(sukomi.pos);
-
-  // Increment the score
-  SCORE++;
-
-  // Only decrease ENERGY if it is greater than 0
-  if (ENERGY > 0) {
-    ENERGY--; // Decrease ENERGY
-    progressBarValue = ENERGY / 20; // Update progressBarValue based on ENERGY
-  }
-
-  // Optional: Prevent ENERGY from going negative
-  if (ENERGY < 0) {
-    ENERGY = 0;
-    progressBarValue = 0; // Progress bar is fully depleted
-  }
 });
-
-// Debug tools (optional)
-if (debug.active) {
-  let debugFrameCounter = 0;
-  const frameThrottle = 2;
-  onUpdate(() => {
-    debugFrameCounter++;
-    if (debugFrameCounter % frameThrottle !== 0) return;
-
-    debug.collisions(true);
-    debug.fps(true);
-  });
-}
