@@ -223,7 +223,7 @@ setInterval(() => {
 
 // Upgrade Panel Functionality
 function upgradePanel() {
-  const panelWidth = 350;
+  const panelWidth = 160;
   const panelHeight = 200;
   const panelPos = vec2(upgrade.pos.x + 30, upgrade.pos.y - 350);
 
@@ -249,8 +249,8 @@ function upgradePanel() {
 
   // Upgrade Click Points Button
   const upgradeClickButton = add([
-    rect(150, 40, { radius: 5 }),
-    pos(panelPos.x + 100, panelPos.y + 50),
+    rect(200, 40, { radius: 5 }),
+    pos(panelPos.x + 20, panelPos.y + 50),
     area(),
     color(rgb(86, 255, 86)), // Green
     "upgradeClickButton",
@@ -263,11 +263,17 @@ function upgradePanel() {
     anchor("center"),
     color(rgb(0, 0, 0)), // Black text
   ]);
+  add([
+    text("-20 coins", { size: 14 }),
+    pos(upgradeClickButton.pos.x + 75, upgradeClickButton.pos.y + 30),
+    anchor("center"),
+    color(rgb(0, 0, 0)), // Black text
+  ]);
 
   // Upgrade Energy Timer Button
   const upgradeTimerButton = add([
     rect(150, 40, { radius: 5 }),
-    pos(panelPos.x + 100, panelPos.y + 110),
+    pos(panelPos.x + 20, panelPos.y + 110),
     area(),
     color(rgb(255, 255, 86)), // Yellow
     "upgradeTimerButton",
