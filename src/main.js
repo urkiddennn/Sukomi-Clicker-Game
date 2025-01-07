@@ -288,7 +288,7 @@ function upgradePanel() {
   ]);
 
   const upgradeMaxEnergyButton = add([
-    rect(180, 40, { radius: 5 }),
+    rect(180, 60, { radius: 5 }),
     pos(panelPos.x + 20, panelPos.y + 170),
     area(),
     color(rgb(86, 154, 255)), // Yellow
@@ -305,6 +305,12 @@ function upgradePanel() {
   add([
     text("+10 max energy", { size: 14 }),
     pos(upgradeMaxEnergyButton.pos.x + 75, upgradeMaxEnergyButton.pos.y + 30),
+    anchor("center"),
+    color(rgb(0, 0, 0)), // Black text
+  ]);
+  add([
+    text("-150 coins", { size: 14 }),
+    pos(upgradeMaxEnergyButton.pos.x + 75, upgradeMaxEnergyButton.pos.y + 50),
     anchor("center"),
     color(rgb(0, 0, 0)), // Black text
   ]);
@@ -341,7 +347,9 @@ onClick("upgradeTimerButton", () => {
 
 onClick("upgradeMaxEnergyButton", () => {
   if (SCORE >= 100) {
-    MAXENERGY += 10;
-    SCORE -= 100;
+    MAXENERGY += 10; // Increase max energy
+    ENERGY += 10; // Refill the extra energy immediately
+    SCORE -= 100; // Deduct score
+    progressBarValue = ENERGY / MAXENERGY; // Update progress bar
   }
 });
