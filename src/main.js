@@ -153,28 +153,23 @@ let addNumberPoints = (startPos) => {
     }
   });
 };
-
-// Click event for Sukomi
 onClick("sukomi", () => {
-  if (CLICKABLE === true) {
+  if (CLICKABLE) {
     addNumberPoints(sukomi.pos);
     sukomi.scaleTo(lerp(sukomi.scale.x + 1, 2, 0.1));
 
     // Increment the score
     SCORE++;
 
-    // Only decrease ENERGY if it is greater than 0
+    // Decrease ENERGY only if it's above 0
     if (ENERGY > 0) {
       ENERGY--; // Decrease ENERGY
       progressBarValue = ENERGY / 20; // Update progressBarValue based on ENERGY
-    }
 
-    // Optional: Prevent ENERGY from going negative
-    if (ENERGY < 0) {
-      ENERGY = 0;
-      progressBarValue = 0;
-      CLICKABLE = false; // Progress bar is fully depleted
+      // If ENERGY reaches 0, set CLICKABLE to false
+      if (ENERGY === 0) {
+        CLICKABLE = false;
+      }
     }
   }
-  // Add points visually
 });
