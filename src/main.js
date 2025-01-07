@@ -4,6 +4,7 @@ import kaplay from "kaplay";
 let SCORE = 0;
 let CLICKPOINTS = 1;
 let CLICKABLE = true;
+let SHOWSETTINGS = false;
 
 let targetScale = 3;
 let targetAngle = 0;
@@ -77,7 +78,7 @@ let progressBarFill = add([
 
 // ENERGY text
 let energyText = add([
-  text(`${ENERGY}/${MAXENERGY}`),
+  text(`${ENERGY}/${MAXENERGY}`, { size: 20 }),
   pos(progressBarPos[0], progressBarPos[1] - 15),
   anchor("left"),
   scale(1),
@@ -249,7 +250,7 @@ function settingsPanel() {
   // Example button
   let button = add([
     rect(100, 30, { radius: 5 }),
-    pos(panelCenter.x - 50, panelCenter.y + 20), // Center horizontally by subtracting half the button width
+    pos(panelCenter.x - 100, panelCenter.y + 20), // Center horizontally by subtracting half the button width
     area(),
     color(rgb(50, 50, 255)), // Button color
     "panelButton",
