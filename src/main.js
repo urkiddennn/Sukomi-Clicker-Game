@@ -129,47 +129,6 @@ onHoverEnd("sukomi", () => {
   isHovered = false; // Set hover state to false
 });
 
-// Toggle Upgrade Panel
-onClick("upgrade", () => {
-  if (SHOWUPGRADE) {
-    // Destroy all elements in the upgrade panel
-    upgradePanelElements.forEach((element) => destroy(element));
-    upgradePanelElements = [];
-  } else {
-    // Create the upgrade panel
-    upgradePanel();
-  }
-  SHOWUPGRADE = !SHOWUPGRADE;
-});
-
-// Upgrade Click Points
-onClick("upgradeClickButton", () => {
-  if (SCORE >= 20) {
-    SCORE -= 20;
-    CLICKPOINTS++;
-  }
-});
-
-// Upgrade Energy Timer
-onClick("upgradeTimerButton", () => {
-  if (SCORE >= 10) {
-    TIMER = Math.max(1000, TIMER * 0.7);
-    SCORE -= 10;
-    console.log(TIMER);
-  }
-});
-
-onClick("upgradeMaxEnergyButton", () => {
-  if (SCORE >= 10) {
-    MAXENERGY += 10;
-
-    SCORE -= 10;
-    progressBarValue = ENERGY / MAXENERGY;
-
-    console.log("upgraded");
-  }
-});
-
 // Update loop
 onUpdate(() => {
   // Update score display
@@ -356,3 +315,44 @@ function upgradePanel() {
     color(rgb(0, 0, 0)), // Black text
   ]);
 }
+
+// Toggle Upgrade Panel
+onClick("upgrade", () => {
+  if (SHOWUPGRADE) {
+    // Destroy all elements in the upgrade panel
+    upgradePanelElements.forEach((element) => destroy(element));
+    upgradePanelElements = [];
+  } else {
+    // Create the upgrade panel
+    upgradePanel();
+  }
+  SHOWUPGRADE = !SHOWUPGRADE;
+});
+
+// Upgrade Click Points
+onClick("upgradeClickButton", () => {
+  if (SCORE >= 20) {
+    SCORE -= 20;
+    CLICKPOINTS++;
+  }
+});
+
+// Upgrade Energy Timer
+onClick("upgradeTimerButton", () => {
+  if (SCORE >= 10) {
+    TIMER = Math.max(1000, TIMER * 0.7);
+    SCORE -= 10;
+    console.log(TIMER);
+  }
+});
+
+onClick("upgradeMaxEnergyButton", () => {
+  if (SCORE >= 10) {
+    MAXENERGY += 10;
+
+    SCORE -= 10;
+    progressBarValue = ENERGY / MAXENERGY;
+
+    console.log("upgraded");
+  }
+});
